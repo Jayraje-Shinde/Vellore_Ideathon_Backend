@@ -123,6 +123,11 @@ io.on("connection", (socket) => {
   });
 });
 
+app.use((err, req, res, next) => {
+  console.error("Global error:", err);
+  res.status(err.status || 500).json({ message: err.message || "Internal server error" });
+});
+
 // ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000
 server.listen(PORT, '0.0.0.0', () => {

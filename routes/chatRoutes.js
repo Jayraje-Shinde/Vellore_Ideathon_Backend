@@ -4,10 +4,13 @@ const { sendMessage, getMessages } = require("../controllers/chatController");
 const { protect } = require("../middleware/authMiddleware");
 const { uploadChatImage } = require("../config/cloudinary");
 
-// POST /chat/send    → Send message (with optional image)
-router.post("/send", protect, uploadChatImage.single("image"), sendMessage);
+router.post("/send", protect, (req, res, next) => {
+  uploadChatImage.single("image")(req, res, (err) => {
+    if (err) return res.status(400).json({ message: "Image upload failed: " + err.message });
+    next();
+  });
+}, sendMessage);
 
-// GET  /chat/:buildingId  → Get all messages for a building
 router.get("/:buildingId", protect, getMessages);
 
 module.exports = router;
