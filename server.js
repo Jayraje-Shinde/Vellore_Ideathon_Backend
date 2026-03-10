@@ -52,6 +52,14 @@ app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
+// ─── Global Error Handler ─────────────────────────────────────────────────────
+app.use((err, req, res, next) => {
+  console.error('Global error:', err)
+  res.status(err.status || 500).json({ 
+    message: err.message || 'Internal server error' 
+  })
+})
+
 // ─── Socket.io Real-time Chat ─────────────────────────────────────────────────
 const activeUsers = new Map(); // socketId → { userId, buildingId }
 
